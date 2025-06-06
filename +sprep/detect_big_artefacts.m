@@ -15,7 +15,7 @@ fs = EEG.srate;
 
 Artefacts = nan(size(EEG.data));
 
-disp('Detecting artefacts in EEG')
+disp('Detecting large artefacts in EEG')
 
 for ChannelIdx = 1:nChannels
     Signal = EEG.data(ChannelIdx, :);
