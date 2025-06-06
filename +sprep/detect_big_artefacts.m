@@ -3,7 +3,7 @@ arguments
     EEG
     adjustEdges = true;
     VoltageThreshold = 1000; % maximum acceptable voltage
-    DiffVoltageThreshold = 50; % maximum acceptable difference from one point to the next
+    DiffVoltageThreshold = 100; % maximum acceptable difference from one point to the next
     MinGap = 20; % seconds; min gap between artefacts, otherwise they get merged
     BaselineQuantile = .5; % return signal to within this quantile of the signal
     MaxEdgeWindow = 30; % seconds; how much to spread the window before giving up
