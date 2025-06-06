@@ -10,10 +10,13 @@ end
 
 BetterCuts = false(size(Cuts));
 
+% identify within what range the signal should return to
+Edges = quantile(Signal, [.5-Quantile/2 .5+Quantile/2]);
+
 for StartIdx = 1:numel(Starts)
 
     [WindowStart, WindowEnd] = sprep.monoch.adjust_edges_to_baseline(Signal, Starts(StartIdx), Ends(StartIdx), ...
-        Quantile, MaxPntsSearchWindow);
+        Edges, MaxPntsSearchWindow);
 
     BetterCuts(WindowStart:WindowEnd) = 1;
 end

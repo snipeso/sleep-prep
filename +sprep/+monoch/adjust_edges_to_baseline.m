@@ -1,18 +1,15 @@
-function [WindowStart, WindowEnd] = adjust_edges_to_baseline(Signal, StartCut, EndCut, Quantile, MaxPntsSearchWindow)
+function [WindowStart, WindowEnd] = adjust_edges_to_baseline(Signal, StartCut, EndCut, Edges, MaxPntsSearchWindow)
 arguments
     Signal (1,:) % important that signal is one dimentional, and always a single row
     StartCut
     EndCut
-    Quantile = .5; % range around the median to wait to get back to
+    Edges = quantile(Signal, [.5-Quantile/2 .5+Quantile/2]);
     MaxPntsSearchWindow = numel(Signal);
 end
 % [WindowStart, WindowEnd] = return_to_baseline(Signal, StartCut, EndCut, Quantile, MaxPntsSearchWindow)
 %
 % resets the edges of window so that they are around the median of the
 % whole signal. 
-
-% identify within what range the signal should return to
-Edges = quantile(Signal, [.5-Quantile/2 .5+Quantile/2]);
 
 % identify the first points from the original cut that returns to baseline
 Indices = 1:numel(Signal); 
