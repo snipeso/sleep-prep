@@ -28,15 +28,6 @@ end
 WindowStart = find(Indices<=StartCut & BaselineSignal, 1, 'last');
 WindowEnd = find(Indices>=EndCut & BaselineSignal, 1, 'first');
 
-% if unsuccessful, just just use the whole max window
-if isempty(WindowStart)
-    WindowStart = MinStart;
-end
-
-if isempty(WindowEnd)
-    WindowEnd = MaxEnd;
-end
-
 
 % Make sure it's not outside maximum allowable extension range. If it is,
 % then just take the edges that minimize the distance from the middle of
@@ -44,16 +35,14 @@ end
 
 Midpoint = mean(Edges); % the theoretical 0 of the channel. Using this instead of actual 0, because there might be large offsets
 
-if WindowStart < MinStart
-    [~, Idx] = min(Signal(MinStart:StartCut)-Midpoint);
-    WindowStart = Idx+MinStart;
-    warning('untested code in adjust_edges_to_baseline')
+if isempty(WindowStart) || WindowStart < MinStart
+    [~, Idx] = min(abs(Signal(MinStart:StartCut))-Midpoint);
+    WindowStart = Idx+MinStart-1;
 end
 
-if WindowEnd > MaxEnd
-    [~, Idx] = min(Signal(EndCut:MaxEnd)-Midpoint);
-    WindowEnd = Idx+EndCut;
-        warning('untested code in adjust_edges_to_baseline')
+if isempty(WindowEnd) || WindowEnd > MaxEnd
+    [~, Idx] = min(abs(Signal(EndCut:MaxEnd))-Midpoint);
+    WindowEnd = Idx+EndCut-1;
 end
 
 
