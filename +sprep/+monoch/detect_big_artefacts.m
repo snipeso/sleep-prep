@@ -1,9 +1,10 @@
-function Artefacts = detect_big_artefacts(Signal, VoltageThreshold, DiffVoltageThreshold, MinGap)
+function Artefacts = detect_big_artefacts(Signal, VoltageThreshold, DiffVoltageThreshold, MinGap, Padding)
 arguments
     Signal (1, :)
     VoltageThreshold = 1000;
     DiffVoltageThreshold = 100;
     MinGap = 1000; % points
+    Padding = 100; % points
 end
 % Do this step only after having removed the general trend in the signal
 % and removed line noise.
@@ -11,6 +12,8 @@ end
 
 % find all timepoints that are really big, or really sharp
 Artefacts = abs(diff([Signal, 0])) > DiffVoltageThreshold | abs(Signal) > VoltageThreshold;
+
+Artefacts = sprep.utils.pad_windows(Artefacts, Padding);
 
 [Starts, Ends] = sprep.utils.data2windows(not(Artefacts));
 

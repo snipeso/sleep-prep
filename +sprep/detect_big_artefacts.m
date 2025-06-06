@@ -1,4 +1,4 @@
-function Artefacts = detect_big_artefacts(EEG, adjustEdges, VoltageThreshold, DiffVoltageThreshold, MinGap, BaselineQuantile, MaxEdgeWindow)
+function Artefacts = detect_big_artefacts(EEG, adjustEdges, VoltageThreshold, DiffVoltageThreshold, MinGap, BaselineQuantile, MaxEdgeWindow, Padding)
 arguments
     EEG
     adjustEdges = true;
@@ -7,6 +7,7 @@ arguments
     MinGap = 20; % seconds; min gap between artefacts, otherwise they get merged
     BaselineQuantile = .5; % return signal to within this quantile of the signal
     MaxEdgeWindow = 30; % seconds; how much to spread the window before giving up
+    Padding = 1; % seconds; how much to pad artefacts; important when dealing with sharp edges, which when filtered can create little ripples around it
 end
 
 nChannels = size(EEG.data, 1);
@@ -19,7 +20,7 @@ disp('Detecting artefacts in EEG')
 for ChannelIdx = 1:nChannels
     Signal = EEG.data(ChannelIdx, :);
 
-    Cuts = sprep.monoch.detect_big_artefacts(Signal, VoltageThreshold, DiffVoltageThreshold, MinGap*fs);
+    Cuts = sprep.monoch.detect_big_artefacts(Signal, VoltageThreshold, DiffVoltageThreshold, MinGap*fs, Padding*fs);
 
     if adjustEdges
         BetterCuts = sprep.monoch.adjust_all_cuts_edges_to_baseline(Signal, Cuts, BaselineQuantile, fs*MaxEdgeWindow);
