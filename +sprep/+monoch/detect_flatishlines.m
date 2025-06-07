@@ -5,5 +5,4 @@ arguments
     SDThreshold = .001;
 end
 
-
 Artefacts = movstd(Signal, WindowPnts) < SDThreshold;
