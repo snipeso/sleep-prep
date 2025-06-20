@@ -27,4 +27,3 @@ EEG.data = EEG.data - mean(EEG.data, 1, 'omitnan');
 % their neighbors
  R = correlate_neighbors(EEG, Window, 'max');
 
-sprep.external.movcorr()
