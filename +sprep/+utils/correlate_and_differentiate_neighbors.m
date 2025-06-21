@@ -1,10 +1,10 @@
-function [R, D] = correlate_and_differentiate_neighbors(EEG, HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
+function [Correlations, DifferenceRatios, MostCorrCh] = correlate_and_differentiate_neighbors(EEG, HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
 arguments
     EEG
-    HighPassFilter = 1;
+    HighPassFilter = 0.5;
     LowPassFilter = 6;
     CorrWindow = 4; % in seconds
-    STDWindow = 30;
+    STDWindow = 60*5;
 end
 
 %%%%%%%%%%
@@ -24,8 +24,9 @@ ChannelIndexes = 1:nChannels;
 Neighbors = sprep.utils.find_neighbors(EEG.chanlocs);
 
 % set up blanks
-R = nan(nChannels, nPoints);
-D = R;
+Correlations = nan(nChannels, nPoints);
+DifferenceRatios = Correlations;
+MostCorrCh = Correlations;
 
 %%%%%%%
 %%% Run
@@ -64,25 +65,19 @@ for ChannelIdx = 1:nChannels
     end
 
     % keep only the highest correlation values at each time point
-    [R(ChannelIdx, :), MaxCorrIndexes] = max(R_neighbors);
+    [Correlations(ChannelIdx, :), MaxCorrIndexes] = max(R_neighbors);
+    MostCorrCh(ChannelIdx, :) = NeighborChannels(MaxCorrIndexes);
 
     % using the same highly correlated channel at each time point, select
     % the difference ratios
-    linearIndices = get_linear_indices(R_neighbors, MaxCorrIndexes);
-    D(ChannelIdx, :) = D_neighbors(linearIndices);
+    linearIndices = sprep.utils.get_linear_indices(R_neighbors, MaxCorrIndexes);
+    DifferenceRatios(ChannelIdx, :) = D_neighbors(linearIndices);
 
     disp(['Finished correlating channel ', num2str(ChannelIdx)])
 end
 
-end
+% save some space
+Correlations = single(Correlations);
+DifferenceRatios = single(DifferenceRatios);
+MostCorrCh = single(MostCorrCh);
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% sub functions
-
-function linearIndices = get_linear_indices(Matrix, Indices)
-
-[R, C] = size(Matrix);
-linearIndices = sub2ind([R, C], Indices, 1:C);
-
-end
