@@ -1,13 +1,25 @@
-function Neighbors = find_neighbors(Chanlocs)
+function Neighbors = find_neighbors(Chanlocs, Distance)
 % Neighbors = find_neighbors(Chanlocs)
 % finds all the channels that are 2 times the median minimum distance of
 % each channel to the other.
 %
-% From iota-neurophys, by Snipes, 2024
+% From sprep
+arguments
+    Chanlocs
+    Distance = 'TwiceMedian';
+end
 
 M = channel_distances([Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z]);
 M(1:numel(Chanlocs)+1:numel(M)) = nan; % set diagonal to nan;
-Neighbors = M <= median(min(M))*2;
+
+switch Distance
+    case 'TwiceMedian'
+        Neighbors = M <= median(min(M))*2;
+    case 'Closest'
+        [~, Neighbors] = min(M);
+    otherwise
+        error('Incorrect input for find_neighbors')
+end
 end
 
 

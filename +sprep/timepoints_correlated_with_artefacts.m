@@ -2,7 +2,7 @@ function Artefacts = timepoints_correlated_with_artefacts(Artefacts, MostCorrCh,
 arguments
     Artefacts
     MostCorrCh
-    maxIterations = 5;
+    maxIterations = size(Artefacts, 1);
 end
 
 ArtefactsToCheck = single(Artefacts);
@@ -26,9 +26,10 @@ while any(ArtefactsToCheck(:)==1) && Iteration <= maxIterations
     
     % assign artefact status to channels that correlated with artefacts
     Artefacts(ChannelsCorrelatedToArtefacts) = 1;
-    ArtefactsToCheck(ChannelsCorrelatedToArtefacts) = 1;
+    ArtefactsToCheck(ChannelsCorrelatedToArtefacts & Artefacts==0) = 1;
 
     disp([num2str(NArtifactPoints) ' artifact points left'])
 
     Iteration = Iteration+1;
+    disp(Iteration)
 end

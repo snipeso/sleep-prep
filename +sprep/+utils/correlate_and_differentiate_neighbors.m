@@ -1,4 +1,4 @@
-function [Correlations, DifferenceRatios, MostCorrCh] = correlate_and_differentiate_neighbors(EEG, HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
+function [Correlations, MinCorrelations, DifferenceRatios, MostCorrCh] = correlate_and_differentiate_neighbors(EEG, HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
 arguments
     EEG
     HighPassFilter = 0.5;
@@ -24,7 +24,8 @@ ChannelIndexes = 1:nChannels;
 Neighbors = sprep.utils.find_neighbors(EEG.chanlocs);
 
 % set up blanks
-Correlations = nan(nChannels, nPoints);
+Correlations = single(nan(nChannels, nPoints));
+MinCorrelations = Correlations;
 DifferenceRatios = Correlations;
 MostCorrCh = Correlations;
 
@@ -39,7 +40,7 @@ EEG = pop_eegfiltnew(EEG, [], LowPassFilter);
 EEG = pop_reref(EEG, []);
 
 % get moving standard deviation of each channel
-STD = movstd(EEG.data', STDWindow)';
+STD = single(movstd(EEG.data', STDWindow))';
 
 for ChannelIdx = 1:nChannels
 
@@ -66,6 +67,7 @@ for ChannelIdx = 1:nChannels
 
     % keep only the highest correlation values at each time point
     [Correlations(ChannelIdx, :), MaxCorrIndexes] = max(R_neighbors);
+    MinCorrelations(ChannelIdx, :) = median(R_neighbors);
     MostCorrCh(ChannelIdx, :) = NeighborChannels(MaxCorrIndexes);
 
     % using the same highly correlated channel at each time point, select
@@ -77,7 +79,7 @@ for ChannelIdx = 1:nChannels
 end
 
 % save some space
-Correlations = single(Correlations);
-DifferenceRatios = single(DifferenceRatios);
-MostCorrCh = single(MostCorrCh);
+% Correlations = single(Correlations);
+% DifferenceRatios = single(DifferenceRatios);
+% MostCorrCh = single(MostCorrCh);
 
