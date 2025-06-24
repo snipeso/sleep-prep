@@ -8,7 +8,7 @@ arguments
     HighPassFilter = 0.5; % ignore drifts and sweating artefacts
     LowPassFilter = 6; % probably good from 4- 15 Hz; higher frequency activity doesn't correlate so much between neighbors
     CorrWindow = 4; % in seconds. The longer the window, the less difference there is between bad channels and actually good channels
-    STDWindow = 60*5; % to calculate moving standard deviation; uses a long window so less affected by occasional artefacts % TODO: check if movmad works better
+    STDWindow = 60*5; % to calculate moving standard deviation; uses a long window so less affected by occasional artefacts
 end
 % this function looks at how correlated channels are to their neighbors,
 % and how much their differ from their most correlated neighbor.
