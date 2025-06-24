@@ -1,10 +1,10 @@
-function diagnostic_log(AllArtefacts, AllArtefactsLabels, DestinationFolder, FilenameCore, ProcessingTime)
+function diagnostic_log(AllArtefacts, AllArtefactsLabels, DestinationFolder, FilenameCore, EndTime)
 arguments
     AllArtefacts
     AllArtefactsLabels
     DestinationFolder = cd;
     FilenameCore = 'unknown';
-    ProcessingTime = nan;
+    EndTime = nan;
 end
 
 if numel(AllArtefacts) ~= numel(AllArtefactsLabels)
@@ -30,18 +30,24 @@ for ArtefactIdx = 1:nArtefacts
 end
 
 % save
-save(fullfile(DestinationFolder, [FilenameCore, '.mat']), 'AllArtefacts', ...
-    'UniquePoints', 'MergedArtefacts', 'ProcessingTime', 'TotArtefactPoints')
+if max(MergedArtefacts) < 255
+MergedArtefacts = uint8(MergedArtefacts);
+else
+MergedArtefacts = uint16(MergedArtefacts);
+end
+
+save(fullfile(DestinationFolder, [FilenameCore, '.mat']), ...
+    'UniquePoints', 'MergedArtefacts', 'EndTime', 'TotArtefactPoints')
 
 %%% plot
 figure('Units','centimeters', 'position', [0 0 20 10])
 
-subplot(1, 2, 1)
-imagesc(UniquePoints)
+subplot(1, 3, 1:2)
+imagesc(MergedArtefacts)
 colorbar
 title('Points marked as artefacts')
 
-subplot(1, 2, 2)
+subplot(1, 3, 3)
 bar(UniquePoints, 'stacked')
 xticks(1:nArtefacts)
 xticklabels(AllArtefactsLabels)

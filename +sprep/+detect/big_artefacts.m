@@ -9,7 +9,7 @@ end
 nChannels = size(EEG.data, 1);
 fs = EEG.srate;
 
-Artefacts = nan(size(EEG.data));
+Artefacts = false(size(EEG.data));
 
 disp('Detecting large artefacts in EEG')
 

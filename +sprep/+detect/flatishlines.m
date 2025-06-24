@@ -11,7 +11,7 @@ end
 nChannels = size(EEG.data, 1);
 fs = EEG.srate;
 
-Artefacts = zeros(size(EEG.data));
+Artefacts = false(size(EEG.data));
 
 disp('Detecting flatlines')
 

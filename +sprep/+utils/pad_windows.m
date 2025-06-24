@@ -4,7 +4,7 @@ Signal % should be a boolean array
 Padding
 end
 
-NewSignal = zeros(size(Signal));
+NewSignal = false(size(Signal));
 
 [Starts, Ends] = sprep.utils.data2windows(Signal);
 
