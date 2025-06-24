@@ -1,4 +1,4 @@
-function [Correlations, MinCorrelations, DifferenceRatios, MostCorrCh] = correlate_and_differentiate_neighbors(EEG, HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
+function [Correlations, DifferenceRatios, MostCorrCh] = correlate_and_differentiate_neighbors(EEG, HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
 arguments
     EEG
     HighPassFilter = 0.5;
@@ -25,7 +25,6 @@ Neighbors = sprep.utils.find_neighbors(EEG.chanlocs);
 
 % set up blanks
 Correlations = single(nan(nChannels, nPoints));
-MinCorrelations = Correlations;
 DifferenceRatios = Correlations;
 MostCorrCh = Correlations;
 
@@ -67,7 +66,6 @@ for ChannelIdx = 1:nChannels
 
     % keep only the highest correlation values at each time point
     [Correlations(ChannelIdx, :), MaxCorrIndexes] = max(R_neighbors);
-    MinCorrelations(ChannelIdx, :) = median(R_neighbors);
     MostCorrCh(ChannelIdx, :) = NeighborChannels(MaxCorrIndexes);
 
     % using the same highly correlated channel at each time point, select

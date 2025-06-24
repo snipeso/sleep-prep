@@ -5,6 +5,11 @@ arguments
     Transformation = 'max';
 end
 
+if isnumeric(Transformation)
+    RThreshold = Transformation;
+    Transformation = 'Threshold';
+end
+
 nChannels = size(EEG.data, 1);
 nPoints = size(EEG.data, 2);
 SampleRate = EEG.srate;
@@ -15,7 +20,7 @@ ChannelIndexes = 1:nChannels;
 
 Neighbors = sprep.utils.find_neighbors(EEG.chanlocs);
 
-R = nan(nChannels, nPoints);
+R = single(nan(nChannels, nPoints));
 
 for ChannelIdx = 1:nChannels
     NeighborChannels = unique(ChannelIndexes(Neighbors(ChannelIdx, :)));
@@ -31,6 +36,8 @@ for ChannelIdx = 1:nChannels
             R(ChannelIdx, :) = median(R_neighbors, 1);
         case 'max'
             R(ChannelIdx, :) = max(R_neighbors);
+        case 'Threshold'
+              R(ChannelIdx, :) = sum(R_neighbors>RThreshold, 1);
         otherwise
             error('incorrect transformation for correlate neighbors')
     end

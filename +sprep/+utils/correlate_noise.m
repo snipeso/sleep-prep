@@ -2,7 +2,7 @@ function Correlations = correlate_noise(EEG, MostCorrCh, CorrWindow)
 arguments
     EEG
     MostCorrCh = [];
-    CorrWindow = 4;
+    CorrWindow = 30;
 end
 % this function tackles the particular artifact when an amplifier or the
 % reference channel becomes disconnected; it leads to many or all channels
