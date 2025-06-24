@@ -1,4 +1,4 @@
-function Artefacts = detect_flatishlines(EEG, MovSDWindow, SDThreshold)
+function Artefacts = flatishlines(EEG, MovSDWindow, SDThreshold)
 arguments
     EEG
     MovSDWindow = 10; % in seconds; does a moving standard deviation, and sees if it's below SD threshold. NB: the higher this is, the higher SD threshold can be without capturing EEG from channels close to the reference

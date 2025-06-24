@@ -13,6 +13,8 @@ end
 % this function looks at how correlated channels are to their neighbors,
 % and how much their differ from their most correlated neighbor.
 
+disp('Detecting bad channels based on similarity to neighbors')
+
 % get moving correlations and difference values. Correlations are Pearson's
 % R, difference values are the ratio: Ch-ChCorrelatedest /
 % std(ChCorrelatedest), such that a value of 2 means that the difference

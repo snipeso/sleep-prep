@@ -6,6 +6,8 @@ arguments
     MaxCorrChannels = 3;
 end
 
+disp('Detecting disconnected channels')
+
 Correlations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, CorrelationThreshold);
 
 Artefacts = Correlations > MaxCorrChannels;

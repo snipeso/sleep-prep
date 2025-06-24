@@ -1,4 +1,4 @@
-function Artefacts = detect_flatlines(EEG, adjustEdges, MaxContiguous, MinGap, BaselineQuantile, MaxEdgeWindow)
+function Artefacts = flatlines(EEG, adjustEdges, MaxContiguous, MinGap, BaselineQuantile, MaxEdgeWindow)
 arguments
     EEG
     adjustEdges = true;

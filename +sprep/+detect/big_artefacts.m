@@ -1,4 +1,4 @@
-function Artefacts = detect_big_artefacts(EEG, VoltageThreshold, DiffVoltageThreshold, Padding)
+function Artefacts = big_artefacts(EEG, VoltageThreshold, DiffVoltageThreshold, Padding)
 arguments
     EEG
     VoltageThreshold = 1000; % maximum acceptable voltage
