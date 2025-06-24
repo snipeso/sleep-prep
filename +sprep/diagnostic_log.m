@@ -20,6 +20,7 @@ for ArtefactIdx = 1:nArtefacts
 end
 
 TotArtefactPoints = nnz(MergedArtefacts);
+TotPoints = numel(MergedArtefacts);
 
 % identify how many points were removed unique to each type of artefact
 UniquePoints = nan(2, nArtefacts);
@@ -37,7 +38,7 @@ MergedArtefacts = uint16(MergedArtefacts);
 end
 
 save(fullfile(DestinationFolder, [FilenameCore, '.mat']), ...
-    'UniquePoints', 'MergedArtefacts', 'EndTime', 'TotArtefactPoints')
+    'UniquePoints', 'MergedArtefacts', 'EndTime', 'TotArtefactPoints', 'TotPoints')
 
 %%% plot
 figure('Units','centimeters', 'position', [0 0 20 10])
@@ -45,10 +46,11 @@ figure('Units','centimeters', 'position', [0 0 20 10])
 subplot(1, 3, 1:2)
 imagesc(MergedArtefacts)
 colorbar
-title('Points marked as artefacts')
+colormap(parula(1+max(MergedArtefacts(:))))
+title(['Points marked as artefacts (', num2str(round(100*TotArtefactPoints/TotPoints)), ' % of data)'])
 
 subplot(1, 3, 3)
-bar(UniquePoints, 'stacked')
+bar(UniquePoints', 'stacked', 'EdgeColor','none')
 xticks(1:nArtefacts)
 xticklabels(AllArtefactsLabels)
 legend({'Unique', 'Tot'})
