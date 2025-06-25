@@ -3,9 +3,9 @@ function [AllArtefacts, CorrelationArtefacts, DifferenceArtefacts] = ...
     HighPassFilter, LowPassFilter, CorrWindow, STDWindow)
 arguments
     EEG
-    CorrelationThreshold = .4; % theoretically from [-1 1]; recommended between 0-.5
+    CorrelationThreshold = .3; % theoretically from [-1 1]; recommended between 0-.5
     DifferenceThreshold = 5; % how many times more than the standard deviation of the neighboring channel is still acceptable
-    HighPassFilter = 0.5; % ignore drifts and sweating artefacts
+    HighPassFilter = 0.8; % ignore drifts and sweating artefacts
     LowPassFilter = 6; % probably good from 4- 15 Hz; higher frequency activity doesn't correlate so much between neighbors
     CorrWindow = 4; % in seconds. The longer the window, the less difference there is between bad channels and actually good channels
     STDWindow = 60*5; % to calculate moving standard deviation; uses a long window so less affected by occasional artefacts

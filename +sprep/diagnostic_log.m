@@ -31,14 +31,15 @@ for ArtefactIdx = 1:nArtefacts
 end
 
 % save
-if max(MergedArtefacts) < 255
+MaxArtefacts = max(MergedArtefacts(:));
+if MaxArtefacts < 255
 MergedArtefacts = uint8(MergedArtefacts);
 else
 MergedArtefacts = uint16(MergedArtefacts);
 end
 
-save(fullfile(DestinationFolder, [FilenameCore, '.mat']), ...
-    'UniquePoints', 'MergedArtefacts', 'EndTime', 'TotArtefactPoints', 'TotPoints')
+% save(fullfile(DestinationFolder, [FilenameCore, '.mat']), ...
+%     'UniquePoints', 'MergedArtefacts', 'EndTime', 'TotArtefactPoints', 'TotPoints')
 
 %%% plot
 figure('Units','centimeters', 'position', [0 0 20 10])
@@ -46,15 +47,17 @@ figure('Units','centimeters', 'position', [0 0 20 10])
 subplot(1, 3, 1:2)
 imagesc(MergedArtefacts)
 colorbar
-colormap(parula(1+max(MergedArtefacts(:))))
-title(['Points marked as artefacts (', num2str(round(100*TotArtefactPoints/TotPoints)), ' % of data)'])
+colormap(parula(1+MaxArtefacts))
+clim([-.5 MaxArtefacts+.5])
+title(['Points marked as artefacts (', num2str(round(100*TotArtefactPoints/TotPoints)), '% of data)'])
 
 subplot(1, 3, 3)
-bar(UniquePoints', 'stacked', 'EdgeColor','none')
+bar(100*UniquePoints'./TotPoints', 'stacked', 'EdgeColor','none')
 xticks(1:nArtefacts)
 xticklabels(AllArtefactsLabels)
 legend({'Unique', 'Tot'})
 title('N points removed by artefact')
+ylabel('% of data')
 saveas(gcf, fullfile(DestinationFolder, [FilenameCore, '.jpg']))
 
 clc
