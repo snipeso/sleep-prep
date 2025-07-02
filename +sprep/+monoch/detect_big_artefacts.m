@@ -12,5 +12,4 @@ end
 
 % find all timepoints that are really big, or really sharp
 Artefacts = abs(diff([Signal, 0])) > DiffVoltageThreshold | abs(Signal) > VoltageThreshold;
-
 Artefacts = sprep.utils.pad_windows(Artefacts, Padding);

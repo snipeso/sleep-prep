@@ -9,7 +9,6 @@ ArtefactsToCheck = single(Artefacts);
 
 Iteration = 1;
 while any(ArtefactsToCheck(:)==1) && Iteration <= maxIterations
-    NArtifactPoints = nnz(ArtefactsToCheck);
 
     % selects the channel where there's an artefact; if there's more than
     % one, it jut picks the first one; if there's none, ignores
@@ -28,8 +27,5 @@ while any(ArtefactsToCheck(:)==1) && Iteration <= maxIterations
     Artefacts(ChannelsCorrelatedToArtefacts) = 1;
     ArtefactsToCheck(ChannelsCorrelatedToArtefacts & Artefacts==0) = 1;
 
-    disp([num2str(NArtifactPoints) ' artifact points left'])
-
     Iteration = Iteration+1;
-    disp(Iteration)
 end
