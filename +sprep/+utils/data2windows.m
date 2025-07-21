@@ -8,7 +8,7 @@ function [Starts, Ends] = data2windows(Array, Threshold)
 Array = reshape(Array, 1, []); % make sure its a 1 x n array
 
 % convert data if it's not already binary
-if any(Array ~= 0 & Array~=1)
+if ~islogical(Array)
     
    % set threshold to 0 if none provided
    if ~exist('Threshold', 'var')
@@ -20,7 +20,7 @@ if any(Array ~= 0 & Array~=1)
 end
 
 % Convert to windows
-Array = [0, Array, 0]; % make sure there's always a start and stop
+Array = [false, Array, false]; % make sure there's always a start and stop
 
 % get edges
 DataEdges = diff(Array);
