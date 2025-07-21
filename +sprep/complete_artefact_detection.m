@@ -20,3 +20,6 @@ AllArtefacts = ArtefactsBig | ArtefactsFlat | ArtefactsDisconnected | ...
     ArtefactsDifferences | ArtefactsCorrelation;
 
 AllArtefacts = sprep.adjust_artefact_edges(EEG, AllArtefacts);
+
+AllArtefacts = sprep.utils.remove_channel_or_window(AllArtefacts, .2);
+AllArtefacts = sprep.adjust_artefacts_for_holes(AllArtefacts, EEG.chanlocs);
