@@ -1,4 +1,4 @@
-function diagnostic_log(AllArtefacts, AllArtefactsLabels, Time, DestinationFolder, FilenameCore, EndTime)
+function removed_data(AllArtefacts, AllArtefactsLabels, Time, DestinationFolder, FilenameCore, EndTime)
 arguments
     AllArtefacts
     AllArtefactsLabels
