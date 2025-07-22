@@ -1,7 +1,8 @@
-function diagnostic_log(AllArtefacts, AllArtefactsLabels, DestinationFolder, FilenameCore, EndTime)
+function diagnostic_log(AllArtefacts, AllArtefactsLabels, Time, DestinationFolder, FilenameCore, EndTime)
 arguments
     AllArtefacts
     AllArtefactsLabels
+    Time = 1:size(AllArtefacts, 2);
     DestinationFolder = cd;
     FilenameCore = 'unknown';
     EndTime = nan;
@@ -33,25 +34,22 @@ end
 % save
 MaxArtefacts = max(MergedArtefacts(:));
 if MaxArtefacts < 255
-MergedArtefacts = uint8(MergedArtefacts);
+    MergedArtefacts = uint8(MergedArtefacts);
 else
-MergedArtefacts = uint16(MergedArtefacts);
+    MergedArtefacts = uint16(MergedArtefacts);
 end
 
 % save(fullfile(DestinationFolder, [FilenameCore, '.mat']), ...
 %     'UniquePoints', 'MergedArtefacts', 'EndTime', 'TotArtefactPoints', 'TotPoints')
 
 %%% plot
-figure('Units','centimeters', 'position', [0 0 20 10])
+figure('Units','centimeters', 'position', [0 0 60 10])
 
-subplot(1, 3, 1:2)
-imagesc(MergedArtefacts)
-colorbar
-colormap(parula(1+MaxArtefacts))
-clim([-.5 MaxArtefacts+.5])
+subplot(1, 5, 1:4)
+sprep.plot.stacked_artefacts(AllArtefacts, AllArtefactsLabels, Time)
 title(['Points marked as artefacts (', num2str(round(100*TotArtefactPoints/TotPoints)), '% of data)'])
 
-subplot(1, 3, 3)
+subplot(1, 5, 5)
 bar(100*UniquePoints'./TotPoints', 'stacked', 'EdgeColor','none')
 xticks(1:nArtefacts)
 xticklabels(AllArtefactsLabels)
