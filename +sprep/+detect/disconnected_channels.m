@@ -1,13 +1,15 @@
-function Artefacts = disconnected_channels(EEG, CorrelationWindow, CorrelationThreshold, MaxCorrChannels)
+function Artefacts = disconnected_channels(EEG, CorrelationWindow, CorrelationThreshold, MinCorrChannels)
 arguments
     EEG % should NOT be rereferenced from original recording!
     CorrelationWindow = 30; % seconds
     CorrelationThreshold = .999;
-    MaxCorrChannels = 3;
+    MinCorrChannels = 3;
 end
 
 disp('Detecting disconnected channels')
 
-Correlations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, CorrelationThreshold);
+NCorrelations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, 'count', CorrelationThreshold);
 
-Artefacts = Correlations > MaxCorrChannels;
+Artefacts = NCorrelations >= MinCorrChannels;
+
+Artefacts(:, sum(Artefacts, 1)<MinCorrChannels) = false;

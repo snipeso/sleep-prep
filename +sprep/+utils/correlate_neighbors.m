@@ -1,13 +1,9 @@
-function R = correlate_neighbors(EEG, Window, Transformation)
+function R = correlate_neighbors(EEG, Window, Transformation, Threshold)
 arguments
     EEG
     Window = 4; % in seconds
-    Transformation = 'max';
-end
-
-if isnumeric(Transformation)
-    RThreshold = Transformation;
-    Transformation = 'Threshold';
+    Transformation = 'max'; % 'max' -> outputs for each channel the highest R value with neighbors; 'median' -> median R value; 'count' -> number of neighbors correlated above threshold
+    Threshold = nan; % needed for 'count'
 end
 
 nChannels = size(EEG.data, 1);
@@ -36,8 +32,8 @@ for ChannelIdx = 1:nChannels
             R(ChannelIdx, :) = median(R_neighbors, 1);
         case 'max'
             R(ChannelIdx, :) = max(R_neighbors);
-        case 'Threshold'
-              R(ChannelIdx, :) = sum(R_neighbors>RThreshold, 1);
+        case 'count'
+              R(ChannelIdx, :) = sum(R_neighbors>Threshold, 1);
         otherwise
             error('incorrect transformation for correlate neighbors')
     end
