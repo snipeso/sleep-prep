@@ -1,9 +1,8 @@
-function Artefacts = big_artefacts(EEG, VoltageThreshold, DiffVoltageThreshold, HighPassFilter, Padding)
+function Artefacts = big_artefacts(EEG, VoltageThreshold, DiffVoltageThreshold, Padding)
 arguments
     EEG
     VoltageThreshold = 1000; % maximum acceptable voltage
     DiffVoltageThreshold = 100; % maximum acceptable difference from one point to the next
-    HighPassFilter = 0.5;
     Padding = 1; % seconds; how much to pad artefacts; important when dealing with sharp edges, which when filtered can create little ripples around it
 end
 
