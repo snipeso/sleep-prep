@@ -3,7 +3,7 @@ arguments
     EEG % should NOT be rereferenced from original recording!
     CorrelationWindow = 30; % seconds
     CorrelationThreshold = .999;
-    MinCorrChannels = 3;
+    MinCorrChannels = 5;
 end
 
 disp('Detecting disconnected channels')
