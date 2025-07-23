@@ -7,7 +7,7 @@ function NewMatrix = resample_matrix(Matrix, old_period, new_period, SampleRate,
 arguments
     Matrix
     old_period
-    new_period
+    new_period % if isempty, it will assume you just want the EEG srate
     SampleRate
     NPoints
     nNewEpochs = [];
@@ -18,9 +18,16 @@ disp('Resampling matrix (inefficient code)')
 nChannels = size(Matrix, 1);
 
 if ~isempty(nNewEpochs)
-NewMatrix = nan(nChannels, nNewEpochs);
+    if islogical(Matrix)
+    else
+        NewMatrix = nan(nChannels, nNewEpochs);
+    end
 else
-    NewMatrix = nan(nChannels, numel(1:new_period:(NPoints/SampleRate)));
+    if islogical(Matrix)
+        NewMatrix = false(nChannels, numel(1:new_period:(NPoints/SampleRate)));
+    else
+        NewMatrix = nan(nChannels, numel(1:new_period:(NPoints/SampleRate)));
+    end
 end
 
 for ChannelIdx = 1:nChannels

@@ -1,4 +1,4 @@
-function NewArray = resample_array(Array, old_period, new_period, SampleRate, NPoints, mode, nNewEpochs)
+function NewArray = resample_array(Array, old_period, new_period, SampleRate, nEEGPoints, Method, nNewEpochs)
 % this is specifically for when data in Matrix is categorical, and so you
 % jut want the majority score for a new window.
 % Note, this is a slightly convoluted method, that first upsamples any
@@ -9,16 +9,16 @@ arguments
     old_period
     new_period
     SampleRate
-    NPoints
-    mode = 'mode'; % could also be 'mean', 'max'
+    nEEGPoints
+    Method = 'mode'; % could also be 'mean', 'max'
     nNewEpochs = [];
 end
 
 % upsample the data so that each point in the original EEG gets a value
-if numel(Array) == NPoints
+if numel(Array) == nEEGPoints
     ArrayInTime = Array; % if the data was already the size of the EEG, skip
 else
-    ArrayInTime = sprep.utils.scoring2time(Array, old_period, SampleRate, NPoints);
+    ArrayInTime = sprep.utils.scoring2time(Array, old_period, SampleRate, nEEGPoints);
 end
 
 % if no new period is provided, assumes that it just wants a datapoint for
@@ -37,13 +37,18 @@ if ~exist("nNewEpochs", 'var') || isempty(nNewEpochs)
     nNewEpochs = numel(Starts);
 end
 
-NewArray = nan(1, nNewEpochs);
+if islogical(Array)
+    NewArray = false(1, nNewEpochs);
+else
+    NewArray = nan(1, nNewEpochs);
+end
 
 % group scores into epochs, assign based on most frequent score for each timepoint
 for EpochIdx = 1:nNewEpochs
+
     Epoch = ArrayInTime(Starts(EpochIdx):Ends(EpochIdx));
 
-    switch mode
+    switch Method
         case 'mode'
             NewArray(EpochIdx) = mode(Epoch);
         case 'mean'
