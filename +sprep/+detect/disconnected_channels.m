@@ -8,22 +8,32 @@ end
 
 disp('Detecting disconnected channels')
 
+[nChannels, nPoints]= size(EEG.data);
+Artefacts = false(nChannels, nPoints);
 
-% TODO: make it correlate epochs, then assign values to data points
-% accordingly; can correlate with all channels this way
+% correlate in windows
+[Starts, Ends] = sprep.utils.epoch_edges(CorrelationWindow, EEG.srate, nPoints);
 
-% % how many channels are highly correlated with each other
-NCorrelations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, 'count', CorrelationThreshold);
+for WindowIdx = 1:numel(Starts)
 
-% propose as artefacts any channel highly correlated with at least a
-% certain number of channels
-Artefacts = NCorrelations >= MinCorrChannels;
+    % correlate channel with all other channels
+    Window = EEG.data(:, Starts(WindowIdx):Ends(WindowIdx));
+    R = corr(Window');
 
-% it has to actually apply to at least three channels (this is important,
+    % exclude diagonal
+    R(1:1+size(R,1):end) = nan;
+
+    for ChannelIdx = 1:nChannels
+
+        % sum number of channels correlated with reference channel above
+        % threshold value
+        if sum(abs(R(ChannelIdx, :))>CorrelationThreshold) >= MinCorrChannels
+            Artefacts(ChannelIdx, Starts(WindowIdx):Ends(WindowIdx)) = true;
+        end
+    end
+end
+
+% it has to actually apply to at least N channels (this is important,
 % because otherwise there's always some mini segment in N3 that manages to
 % be super correlated with neighbors
 Artefacts(:, sum(Artefacts, 1)<MinCorrChannels) = false;
-
-
-% The above doesn't work well, because it finds a lot of swa as correlated
-% enough to be an artefact.
