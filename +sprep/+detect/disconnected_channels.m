@@ -9,20 +9,19 @@ end
 disp('Detecting disconnected channels')
 
 
-DifferenceInSequence = diff(EEG.data, 1, 1);
-
-
 
 % % how many channels are highly correlated with each other
-% NCorrelations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, 'count', CorrelationThreshold);
-% 
-% % propose as artefacts any channel highly correlated with at least a
-% % certain number of channels
-% Artefacts = NCorrelations >= MinCorrChannels;
-% 
-% % it has to actually apply to at least three channels (this is important,
-% % because otherwise there's always some mini segment in N3 that manages to
-% % be super correlated with neighbors
-% Artefacts(:, sum(Artefacts, 1)<MinCorrChannels) = false;
+NCorrelations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, 'count', CorrelationThreshold);
+
+% propose as artefacts any channel highly correlated with at least a
+% certain number of channels
+Artefacts = NCorrelations >= MinCorrChannels;
+
+% it has to actually apply to at least three channels (this is important,
+% because otherwise there's always some mini segment in N3 that manages to
+% be super correlated with neighbors
+Artefacts(:, sum(Artefacts, 1)<MinCorrChannels) = false;
+
+
 % The above doesn't work well, because it finds a lot of swa as correlated
 % enough to be an artefact.

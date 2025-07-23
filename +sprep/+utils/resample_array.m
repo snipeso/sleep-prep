@@ -31,9 +31,7 @@ end
 %%% downsample to new epoch length
 
 % new epoch start and end times
-Starts = unique([1:new_period*SampleRate:numel(ArrayInTime), numel(ArrayInTime)]);
-Ends = Starts(2:end)-1;
-Starts = Starts(1:end-1);
+[Starts, Ends] = sprep.utils.epoch_edges(new_period, SampleRate, numel(ArrayInTime));
 
 if ~exist("nNewEpochs", 'var') || isempty(nNewEpochs)
     nNewEpochs = numel(Starts);
