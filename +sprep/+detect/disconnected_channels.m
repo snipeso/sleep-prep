@@ -9,6 +9,8 @@ end
 disp('Detecting disconnected channels')
 
 
+% TODO: make it correlate epochs, then assign values to data points
+% accordingly; can correlate with all channels this way
 
 % % how many channels are highly correlated with each other
 NCorrelations = sprep.utils.correlate_neighbors(EEG, CorrelationWindow, 'count', CorrelationThreshold);
