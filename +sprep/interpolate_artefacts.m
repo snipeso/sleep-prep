@@ -1,19 +1,19 @@
-function [EEG, interpolatedPoints, interpolatedArtefacts] = interpolate_artefacts(EEG, Artefacts, EpochLength)
+function [EEG, interpolatedPoints, interpolatedArtefacts] = interpolate_artefacts(EEG, Artefacts, EpochLength, MaxChannelsToInterpolate)
 arguments
     EEG
     Artefacts
     EpochLength = []; % this assumes artefacts is the same number of points as EEG data
+    MaxChannelsToInterpolate = 20;
 end
 
-nChannels = size(Artefacts, 1);
 nPoints = size(EEG.data, 2);
 
 interpolatedPoints = false(size(EEG.data));
 interpolatedArtefacts = false(size(Artefacts));
 
-% timepoints that have fewer than half of available channels won't be
+% timepoints that have fewer than a certain number of channels won't be
 % interpolated
-Artefacts(:, sum(Artefacts, 1)>nChannels/2) = 0;
+Artefacts(:, sum(Artefacts, 1)>MaxChannelsToInterpolate) = 0;
 
 % identify all the unique subsets of bad channels; this will be at most the
 % same as the number of epochs, but best case scenario just a couple if for
