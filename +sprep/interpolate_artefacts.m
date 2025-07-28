@@ -1,4 +1,4 @@
-function [EEG, interpolatedPoints] = interpolate_artefacts(EEG, Artefacts, EpochLength)
+function [EEG, interpolatedPoints, interpolatedArtefacts] = interpolate_artefacts(EEG, Artefacts, EpochLength)
 arguments
     EEG
     Artefacts
@@ -9,6 +9,7 @@ nChannels = size(Artefacts, 1);
 nPoints = size(EEG.data, 2);
 
 interpolatedPoints = false(size(EEG.data));
+interpolatedArtefacts = false(size(Artefacts));
 
 % timepoints that have fewer than half of available channels won't be
 % interpolated
@@ -25,7 +26,7 @@ nClusters = size(ClustersOfBadChannels, 1);
 disp(['Interpolating ', num2str(nClusters), ' segments'])
 
 for ClusterIdx = 1:nClusters
-    
+
     % get one unique set of bad channels
     BadChannels = ClustersOfBadChannels(ClusterIdx, :);
     if not(any(BadChannels==1))
@@ -33,18 +34,18 @@ for ClusterIdx = 1:nClusters
     end
 
     % find the corresponding time points where there are those bad channels
-    BadWindows = TimepointsOfClusters==ClusterIdx;
+    BadWindows = TimepointsOfClusters'==ClusterIdx;
 
     if ~isempty(EpochLength)
-    BadPoints = sprep.monoch.resample_scoring(BadWindows, EpochLength, [], EEG.srate, nPoints);
+        BadPoints = sprep.monoch.resample_scoring(BadWindows, EpochLength, [], EEG.srate, nPoints);
     else
         BadPoints = BadWindows;
     end
 
     [Starts, Ends] = sprep.utils.data2windows(BadPoints);
-    
+
     % select relevant data
-    EEGMini = pop_select(EEG, 'point', [Starts, Ends]);
+    EEGMini = pop_select(EEG, 'point', [Starts(:), Ends(:)]); % TODO make faster by cutting data out directly (problem; eeglab functions dont like weird structures)
     EEGMini = pop_select(EEGMini, 'nochannel', find(BadChannels));
 
     % interpolate only that subset of data back to the original number of
@@ -53,7 +54,9 @@ for ClusterIdx = 1:nClusters
 
     % restore the data to original matrix
     EEG.data(:, BadPoints) = EEGMini.data;
+
     interpolatedPoints(BadChannels, BadPoints) = true;
+    interpolatedArtefacts(BadChannels, BadWindows) = true;
 
     disp(['finished cluster ', num2str(ClusterIdx), '/', num2str(nClusters)])
 end

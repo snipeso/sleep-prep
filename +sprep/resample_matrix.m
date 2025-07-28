@@ -33,5 +33,6 @@ end
 for ChannelIdx = 1:nChannels
     Array = sprep.utils.resample_array(Matrix(ChannelIdx, :), ...
         old_period, new_period, SampleRate, NPoints, 'max', nNewEpochs);
+
     NewMatrix(ChannelIdx, 1:numel(Array)) = Array;
 end
