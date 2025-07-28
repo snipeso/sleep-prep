@@ -1,4 +1,4 @@
-function Scoring = assign_n1_to_previous_score(Scoring, N1Score)
+function Scoring = reassign_n1(Scoring, N1Score)
 arguments
     Scoring
     N1Score = -1;
