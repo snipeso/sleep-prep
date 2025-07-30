@@ -34,6 +34,6 @@ EEG.reject.gcompreject = Rejects';
 badcomps = find(Rejects);
 
 % remove components from data
-EEG = pop_subcomp(EEGr, badcomps);
+EEG = pop_subcomp(EEG, badcomps);
 
 

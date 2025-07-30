@@ -1,18 +1,23 @@
-function [EEG, EpochsNoICA] = clean_whole_night_ica(EEG, Scoring, EpochLength, Artefacts, ICAMinutes, ArtefactTypes, MaxBadChannels, MinTimeCycleDetection)
+function [EEG, EpochsNoICA] = clean_whole_night_ica(EEG, Scoring, EpochLength, ...
+    Artefacts, Interpolated, ICAMinutes, ArtefactTypes, MaxBadChannels, MinTimeCycleDetection, HighpassFilter, Stopband)
 arguments
     EEG
     Scoring
     EpochLength
     Artefacts = false(size(EEG.data, 1), numel(Scoring));
-    ICAMinutes = [2 10]; % in minutes, min and max
+    Interpolated = false(size(EEG.data, 1), numel(Scoring));
+    ICAMinutes = [5 15]; % in minutes, min and max
     ArtefactTypes = {'Eye', 'Heart', 'Muscle'};
     MaxBadChannels = 10;
     MinTimeCycleDetection = 10; % minutes
-
+    HighpassFilter = 2;
+    Stopband = 1;
 end
+% Data should have at least been notch filtered and average referenced.
 
 disp('Cleaning whole night with ICA; takes a while')
 
+% nBadChannels = sum(Artefacts | Interpolated, 1);
 nBadChannels = sum(Artefacts, 1);
 
 % identify sleep cycles (going to run ICA seperately on each stage of each
@@ -29,7 +34,7 @@ UniqueScores(isnan(UniqueScores)) = [];
 
 
 % filter just for ICA detection
-EEGfiltered = sprep.highpass_eeg(EEG, high_pass, hp_stopband);
+EEGfiltered = sprep.highpass_eeg(EEG, HighpassFilter, Stopband);
 
 EpochsNoICA = false(1, numel(Scoring));
 
@@ -41,11 +46,12 @@ for CycleIdx = 1:numel(StartCycles)
 
     for StageIdx = 1:numel(UniqueScores)
 
-        disp(['Running ICA for cycle #', num2str(CycleIdx),'/',num2str(numel(StartCycles)), ', stage ', num2str(UniqueScores(StageIdx)) ])
+        disp(['Running ICA for cycle ', num2str(CycleIdx),'/',num2str(numel(StartCycles)), ', stage ', num2str(UniqueScores(StageIdx)) ])
 
         % select clean enough epochs of given cycle of given stage
         Epochs = Scoring==UniqueScores(StageIdx) & ...
             EpochIndexes>=StartCycles(CycleIdx) & EpochIndexes<=EndCycles(CycleIdx);
+
         CleanEpochs = Epochs & nBadChannels<=MaxBadChannels;
       
         % if too few, skip
@@ -56,8 +62,14 @@ for CycleIdx = 1:numel(StartCycles)
         end
 
         % if many, take only first n minutes
-        nCleanEpochs = cumsum(CleanEpochs);
-        CleanEpochs = CleanEpochs & nCleanEpochs <= ceil(ICAMinutes(2)*60/EpochLength);
+        % nCleanEpochs = cumsum(CleanEpochs);
+        % CleanEpochs = CleanEpochs & nCleanEpochs <= ceil(ICAMinutes(2)*60/EpochLength);
+
+        nArtifacts = nBadChannels;
+        nArtifacts(~CleanEpochs) = nan;
+        [~, CleanestEpochs] = mink(nArtifacts, ceil(ICAMinutes(2)*60/EpochLength));
+        CleanEpochs = false(size(Scoring));
+        CleanEpochs(CleanestEpochs) = true;
 
         % select clean EEG
         [Starts, Ends] = sprep.utils.data2windows(CleanEpochs);
@@ -69,7 +81,7 @@ for CycleIdx = 1:numel(StartCycles)
         % select EEG of stage & cycle, including unclean data
         EpochsInTime = sprep.utils.scoring2time(Epochs, EpochLength, EEG.srate, size(EEG.data, 2)); % uses points, to more easily get chunk of EEG data and put it back % TODO: check that off-by-one isn't a problem
         [Starts, Ends] = sprep.utils.data2windows(EpochsInTime);
-        EEGStage = pop_select(EEG, 'points', [Starts(:), Ends(:)]);
+        EEGStage = pop_select(EEG, 'point', [Starts(:), Ends(:)]);
 
         % switch out clean filtered data for all epochs unfiltered data
         EEGICA.data = EEGStage.data;

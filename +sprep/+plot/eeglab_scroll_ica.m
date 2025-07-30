@@ -1,6 +1,6 @@
 function eeglab_scroll_ica(EEG)
 
-
+StandardColor = {[.6 .6 .6]};
 Pix = get(0,'screensize');
 
 % turn red all the bad components
