@@ -1,11 +1,10 @@
 function [EEG, EpochsNoICA] = clean_whole_night_ica(EEG, Scoring, EpochLength, ...
-    Artefacts, Interpolated, ICAMinutes, ArtefactTypes, MaxBadChannels, MinTimeCycleDetection, HighpassFilter, Stopband)
+    Artefacts, ICAMinutes, ArtefactTypes, MaxBadChannels, MinTimeCycleDetection, HighpassFilter, Stopband)
 arguments
     EEG
     Scoring
     EpochLength
     Artefacts = false(size(EEG.data, 1), numel(Scoring));
-    Interpolated = false(size(EEG.data, 1), numel(Scoring));
     ICAMinutes = [5 15]; % in minutes, min and max
     ArtefactTypes = {'Eye', 'Heart', 'Muscle'};
     MaxBadChannels = 10;
