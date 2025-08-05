@@ -1,4 +1,4 @@
-function ArtifactsCell = resample_artifacts(ArtifactsCell, SampleRate, EpochLength, MaxOldPoints, MaxNewPoints)
+function ArtifactsCell = resample_artefacts(ArtifactsCell, SampleRate, EpochLength, MaxOldPoints, MaxNewPoints)
 
 
 for ArtifactIdx = 1:numel(ArtifactsCell)
