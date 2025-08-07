@@ -6,7 +6,7 @@ arguments
     SmoothWindow = 0.2; % seconds
 end
 
-disp('Detecting muscle artifacts')
+disp('Detecting muscle artefacts')
 
 EEG = pop_reref(EEG, []);
 
