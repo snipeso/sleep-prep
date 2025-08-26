@@ -1,6 +1,13 @@
 function EEG = cut_out_artefacts(EEG, RemoveEpochs, EpochLength)
 
-Artefacts = repmat(RemoveEpochs, size(EEG.data, 1), 1);
-EEG = sprep.eeg.zero_artefacts(EEG, Artefacts, nan, EpochLength);
-EEG.data(:, all(isnan(EEG.data))) = [];
-EEG = eeg_checkset(EEG);
+[Starts, Ends] = sprep.utils.data2windows(RemoveEpochs);
+
+Windows = [Starts'-1, Ends']*EpochLength;
+
+% make sure to capture any of that lingering EEG at the end when its not
+% exactly a multiple of the epoch lengths
+if Ends(end)==numel(RemoveEpochs)
+    Windows(end) = size(EEG.data, 2)/EEG.srate;
+end
+
+EEG = pop_select(EEG, 'notime', Windows);
