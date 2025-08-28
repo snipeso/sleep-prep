@@ -29,7 +29,7 @@ CorrelationArtefacts = Correlations < CorrelationThreshold | Correlations == 1;
 DifferenceArtefacts = Differences>DifferenceThreshold;
 
 % if a segment wasn't marked as an artefact because its values were not
-% outside the standard deviation of the most correlateed neighboring
+% outside the standard deviation of the most correlated neighboring
 % channel, but that neighboring channel is an artefact, then odds are good
 % that this segment is also an artefact
 DifferenceArtefacts = sprep.utils.timepoints_correlated_with_artefacts(...

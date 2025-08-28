@@ -4,7 +4,7 @@ arguments
     MostCorrCh = [];
     CorrWindow = 30;
 end
-% this function tackles the particular artifact when an amplifier or the
+% this function tackles the particular artefact when an amplifier or the
 % reference channel becomes disconnected; it leads to many or all channels
 % to be extremely correlated with each other. Because N3 can also have
 % extremely high correlations, this function focuses on high frequencies,

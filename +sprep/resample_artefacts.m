@@ -1,7 +1,15 @@
-function ArtifactsCell = resample_artefacts(ArtifactsCell, SampleRate, EpochLength, MaxOldPoints, MaxNewPoints)
+function ArtefactsCell = resample_artefacts(ArtefactsCell, SampleRate, EpochLength, MaxOldPoints, MaxNewPoints, OldPeriod)
+arguments
+    ArtefactsCell
+    SampleRate
+    EpochLength
+    MaxOldPoints
+    MaxNewPoints
+    OldPeriod = 1/SampleRate; % most detectors are for every sample point, but if not, specify what the period was
+end
 
 
-for ArtifactIdx = 1:numel(ArtifactsCell)
-    ArtifactsCell{ArtifactIdx} = sprep.resample_matrix(ArtifactsCell{ArtifactIdx}, ...
-        1/SampleRate, EpochLength, SampleRate, MaxOldPoints, MaxNewPoints); 
+for ArtefactIdx = 1:numel(ArtefactsCell)
+    ArtefactsCell{ArtefactIdx} = sprep.resample_matrix(ArtefactsCell{ArtefactIdx}, ...
+        OldPeriod, EpochLength, SampleRate, MaxOldPoints, MaxNewPoints); 
 end

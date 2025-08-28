@@ -64,11 +64,12 @@ for CycleIdx = 1:numel(StartCycles)
         % nCleanEpochs = cumsum(CleanEpochs);
         % CleanEpochs = CleanEpochs & nCleanEpochs <= ceil(ICAMinutes(2)*60/EpochLength);
 
-        nArtifacts = nBadChannels;
-        nArtifacts(~CleanEpochs) = nan;
-        [~, CleanestEpochs] = mink(nArtifacts, ceil(ICAMinutes(2)*60/EpochLength));
+        nArtefacts = nBadChannels;
+        nArtefacts(~CleanEpochs) = nan;
+        [~, CleanestEpochs] = mink(nArtefacts, ceil(ICAMinutes(2)*60/EpochLength));
         CleanEpochs = false(size(Scoring));
         CleanEpochs(CleanestEpochs) = true;
+        CleanEpochs(isnan(nArtefacts)) = false;
 
         % select clean EEG
         [Starts, Ends] = sprep.utils.data2windows(CleanEpochs);

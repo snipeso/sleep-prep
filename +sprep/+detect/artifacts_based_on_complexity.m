@@ -1,4 +1,4 @@
-function Artefacts = artifacts_based_on_complexity(EEG, ArtefactCandidates, HighPassFilt, LZCWindow, LZCThreshold)
+function Artefacts = artefacts_based_on_complexity(EEG, ArtefactCandidates, HighPassFilt, LZCWindow, LZCThreshold)
 arguments
     EEG
     ArtefactCandidates
@@ -25,7 +25,7 @@ for ChannelIdx = 1:size(ArtefactCandidates, 1)
     Rejects = 0;
     for StartIdx = 1:numel(Starts)
 
-        % only take first 2 seconds from artifact; this is because LCZ calc
+        % only take first 2 seconds from artefact; this is because LCZ calc
         % time explodes with longer windows, and is less reliable with
         % shorter windows
         

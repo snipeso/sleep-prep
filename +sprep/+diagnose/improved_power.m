@@ -33,14 +33,14 @@ for ArtefactIdx = 1:numel(ArtefactLabels)
     end
 end
 
-%%% plot just power of artifacts
+%%% plot just power of artefacts
 figure('Units','normalized', 'OuterPosition',[0 0 1 1])
 
-ArtifactCount = sprep.count_artefacts(ArtefactsCell);
+ArtefactCount = sprep.count_artefacts(ArtefactsCell);
 for ArtefactIdx = 1:numel(ArtefactLabels)
 
     % remove epochs with artefacts
-    PowerWith = sprep.remove_artefacts(Power, not(ArtefactsCell{ArtefactIdx} & ArtifactCount==1));
+    PowerWith = sprep.remove_artefacts(Power, not(ArtefactsCell{ArtefactIdx} & ArtefactCount==1));
 
     for ScoringIdx = 1:numel(ScoringIndexes)
 

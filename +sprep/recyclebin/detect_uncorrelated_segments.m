@@ -19,7 +19,7 @@ EEG = pop_eegfiltnew(EEG, [], LowPassFilter);
 
 
 % average reference
-EEG.data(Artifacts) = nan;
+EEG.data(Artefacts) = nan;
 EEG.data = EEG.data - mean(EEG.data, 1, 'omitnan');
 
 

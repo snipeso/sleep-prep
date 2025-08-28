@@ -8,7 +8,7 @@ arguments
     RunTimes = 2;
 end
 
-HjorthParameters = sprep.calculate.hjorth_epochs(EEG);
+HjorthParameters = sprep.calculate.hjorth_epochs(EEG, HjorthEpochLength);
 nHjorthEpochs = size(HjorthParameters, 2);
 
 % resample scoring to new Hjorth windows
