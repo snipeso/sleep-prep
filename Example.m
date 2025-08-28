@@ -76,7 +76,6 @@ if size(EEG.data) == size(ArtefactsData) % just checking
     sprep.plot.eeglab_scroll(EEG, ArtefactsData)
 end
 
-ArtefactsUpSampled = sprep.resample_artifacts()
 
 ArtefactsData = EEG.data;
 ArtefactsData(AllArtefactsSmooth==0) = nan;
