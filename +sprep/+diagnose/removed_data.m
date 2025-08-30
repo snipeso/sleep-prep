@@ -4,7 +4,7 @@ arguments
     AllArtefactsLabels
     Time = 1:size(AllArtefacts, 2);
     DestinationFolder = cd;
-    FilenameCore = 'unknown';
+    FilenameCore = '';
     EndTime = nan;
 end
 
@@ -58,9 +58,12 @@ xticklabels(AllArtefactsLabels)
 legend({'Unique', 'Tot'})
 title('N points removed by artefact')
 ylabel('% of data')
+
+if ~isempty(FilenameCore)
 saveas(gcf, fullfile(DestinationFolder, [FilenameCore, '.jpg']))
 
 clc
 
 disp(FilenameCore)
 disp(['Total time: ', num2str(round(EndTime/60)), ' min'])
+end
