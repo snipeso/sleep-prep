@@ -59,5 +59,3 @@ for ClusterIdx = 1:nClusters
 
     disp(['finished cluster ', num2str(ClusterIdx), '/', num2str(nClusters)])
 end
-
-% interpolate bad channels

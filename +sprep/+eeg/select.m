@@ -7,7 +7,7 @@ EEG.data = [];
 Data(:, ~KeepVector) = [];
 
 EEG.data = Data;
-EEG.time = EEG.time(KeepVector);
+EEG.time = EEG.times(KeepVector);
 EEG.event = struct();
 EEG = eeg_checkset(EEG);
 
