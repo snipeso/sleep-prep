@@ -4,7 +4,7 @@ arguments
     SampleRate
     EpochLength
     MaxOldPoints
-    MaxNewPoints
+    MaxNewPoints = [];
     OldPeriod = 1/SampleRate; % most detectors are for every sample point, but if not, specify what the period was
 end
 

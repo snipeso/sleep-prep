@@ -27,7 +27,7 @@ HypnogramSummary.TST = TST*EpochLength/60; % convert to minutes
 
 % Sleep efficiency
 TIB = numel(Scoring); % number of epochs
-HypnogramSummary.SleepEfficiency = TST/TIB;
+HypnogramSummary.SleepEfficiency = 100*TST/TIB;
 HypnogramSummary.TIB = TIB*EpochLength/60; % convert to minutes
 
 % Time spent and percentages of N1, N2, N3, REM

@@ -42,11 +42,10 @@ for ClusterIdx = 1:nClusters
         BadPoints = BadWindows;
     end
 
-    [Starts, Ends] = sprep.utils.data2windows(BadPoints);
-
-    % select relevant data
-    EEGMini = pop_select(EEG, 'point', [Starts(:), Ends(:)]); % TODO make faster by cutting data out directly (problem; eeglab functions dont like weird structures)
+    EEGMini = sprep.eeg.select(EEG, BadPoints); % faster
     EEGMini = pop_select(EEGMini, 'nochannel', find(BadChannels));
+
+    %%%
 
     % interpolate only that subset of data back to the original number of
     % channels
@@ -60,5 +59,3 @@ for ClusterIdx = 1:nClusters
 
     disp(['finished cluster ', num2str(ClusterIdx), '/', num2str(nClusters)])
 end
-
-% interpolate bad channels
