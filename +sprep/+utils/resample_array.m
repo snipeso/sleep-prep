@@ -43,6 +43,11 @@ else
     NewArray = nan(1, nNewEpochs);
 end
 
+if nNewEpochs > numel(Starts)
+    warning('mismatch in data length and reqested number of epochs')
+    nNewEpochs = numel(Starts);
+end
+
 % group scores into epochs, assign based on most frequent score for each timepoint
 for EpochIdx = 1:nNewEpochs
 
