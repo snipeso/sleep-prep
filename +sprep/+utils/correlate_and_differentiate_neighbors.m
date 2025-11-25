@@ -6,6 +6,7 @@ arguments
     CorrWindow = 4; % in seconds
     STDWindow = 60*5;
 end
+% should have data already rereferenced to average
 
 %%%%%%%%%%
 %%% setup
@@ -14,6 +15,10 @@ end
 nChannels = size(EEG.data, 1);
 nPoints = size(EEG.data, 2);
 SampleRate = EEG.srate;
+
+if nChannels < 10
+    warning('Too few channels for correlating neighbors')
+end
 
 CorrWindow = CorrWindow*SampleRate;
 STDWindow = STDWindow*SampleRate;
@@ -35,11 +40,8 @@ MostCorrCh = Correlations;
 EEG = pop_eegfiltnew(EEG, HighPassFilter, []);
 EEG = pop_eegfiltnew(EEG, [], LowPassFilter);
 
-% reference to average
-EEG = pop_reref(EEG, []);
-
 % get moving standard deviation of each channel
-STD = single(movstd(EEG.data', STDWindow))';
+STD = single(movstd(EEG.data', STDWindow))'; % single to reduce amount of data in memory
 
 for ChannelIdx = 1:nChannels
 
@@ -49,9 +51,9 @@ for ChannelIdx = 1:nChannels
     % set up blanks
     R_neighbors = nan(numel(NeighborChannels), nPoints);
     D_neighbors = R_neighbors;
-    
+
     for Idx = 1:numel(NeighborChannels)
-        
+
         NeighborIdx = NeighborChannels(Idx);
 
         % performing moving correlation of channel with a given neighbor
@@ -59,7 +61,7 @@ for ChannelIdx = 1:nChannels
             EEG.data(NeighborIdx, :)', CorrWindow);
 
         % get ratio of difference between channel and neighbor to the
-        % moving standard deviation of the neighbor. 
+        % moving standard deviation of the neighbor.
         Diff = abs(EEG.data(ChannelIdx, :)-EEG.data(NeighborIdx, :));
         D_neighbors(Idx, :) = Diff./STD(NeighborIdx, :);
     end

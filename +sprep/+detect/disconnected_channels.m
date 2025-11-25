@@ -10,6 +10,11 @@ end
 disp('Detecting disconnected channels')
 
 [nChannels, nPoints]= size(EEG.data);
+
+if nChannels <= MinCorrChannels
+    error('Too few channels for this analysis')
+end
+
 ArtefactsCorr = false(nChannels, nPoints);
 ArtefactsUncorr = ArtefactsCorr;
 
