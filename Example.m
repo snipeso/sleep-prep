@@ -82,4 +82,15 @@ ArtefactsData(AllArtefactsSmooth==0) = nan;
 sprep.plot.eeglab_scroll(EEG, ArtefactsData)
 
 
-%% TODO: example code for ICA
+%% example code for ICA
+
+Artefacts = sprep.resample_artefacts({AllArtefactsSmooth}, EEG.srate, EpochLength, size(EEG.data, 2), numel(Scoring));
+[EEG, ~, InterpolatedArtefacts] = sprep.interpolate_artefacts(EEG, Artefacts, EpochLength, MaxChannelsToInterpolate);
+Artefacts(InterpolatedArtefacts) = 0;
+
+EEG = pop_reref(EEG, []);
+
+[EEG, EpochsNoICA] = sprep.eeg.clean_whole_night_ica(EEG, Scoring, EpochLength, Artefacts);
+
+
+
