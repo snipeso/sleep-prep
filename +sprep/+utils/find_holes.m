@@ -7,6 +7,10 @@ arguments
     MinNeighbors = 2;
 end
 
+if numel(Chanlocs) ~= size(Artefacts, 1)
+    error('mismatch in artefacts and chanlocs')
+end
+
 Neighbors = sprep.utils.find_neighbors(Chanlocs);
 EdgeChannels = find(sum(Neighbors)<=5);
 
@@ -18,7 +22,7 @@ for ChannelIdx = 1:numel(Chanlocs)
     end
 
     ChNeighbors = Neighbors(ChannelIdx, :);
-
     nGoodNeighbors = sum(Artefacts(ChNeighbors, :)==0);
+
     Holes(ChannelIdx, :) = nGoodNeighbors < MinNeighbors;
 end

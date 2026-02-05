@@ -8,7 +8,9 @@ arguments
     EndTime = nan;
 end
 
+if contains(FilenameCore, '.')
 FilenameCore = extractBefore(FilenameCore, '.');
+end
 
 if numel(AllArtefacts) ~= numel(AllArtefactsLabels)
     error('mismatch labels and artefacts')

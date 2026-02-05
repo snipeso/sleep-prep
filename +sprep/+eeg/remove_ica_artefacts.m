@@ -31,7 +31,7 @@ end
 TopClassifications = sprep.top_components_by_category(EEG);
 Rejects = ismember(TopClassifications, RemoveComps);
 EEG.reject.gcompreject = Rejects';
-badcomps = find(Rejects);
+badcomps = find(Rejects); % sprep.plot.eeglab_scroll_ica(EEG)
 
 % remove components from data
 EEG = pop_subcomp(EEG, badcomps);

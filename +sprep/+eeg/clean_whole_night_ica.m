@@ -61,9 +61,6 @@ for CycleIdx = 1:numel(StartCycles)
         end
 
         % if many, take only first n minutes
-        % nCleanEpochs = cumsum(CleanEpochs);
-        % CleanEpochs = CleanEpochs & nCleanEpochs <= ceil(ICAMinutes(2)*60/EpochLength);
-
         nArtefacts = nBadChannels;
         nArtefacts(~CleanEpochs) = nan;
         [~, CleanestEpochs] = mink(nArtefacts, ceil(ICAMinutes(2)*60/EpochLength));
