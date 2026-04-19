@@ -52,7 +52,7 @@ for CycleIdx = 1:numel(StartCycles)
             EpochIndexes>=StartCycles(CycleIdx) & EpochIndexes<=EndCycles(CycleIdx);
 
         CleanEpochs = Epochs & nBadChannels<=MaxBadChannels;
-      
+
         % if too few, skip
         if nnz(CleanEpochs)*EpochLength < ICAMinutes(1)*60
             EpochsNoICA(Epochs) = true;
@@ -70,14 +70,26 @@ for CycleIdx = 1:numel(StartCycles)
 
         % select clean EEG
         [Starts, Ends] = sprep.utils.data2windows(CleanEpochs);
+        Starts = Starts - EpochLength; % fence-post problem solution. If Start = 1 (the first epoch) then it needs to be 0 for whn its in seconds.
         EEGICA = pop_select(EEGfiltered, 'time', [Starts(:), Ends(:)]*EpochLength); % starts and ends is in epoch indexes, so need to turn into seconds
-        
+
+        if size(EEGICA.data, 2)/EEG.srate < ICAMinutes(1)*60
+            disp('skipping cycle due to insuficient data')
+            EpochsNoICA(Epochs) = true;
+            continue
+        end
+
         % run ICA
+        try
         EEGICA = sprep.eeglab_ica(EEGICA);
+        catch
+        a=1;
+        end
 
         % select EEG of stage & cycle, including unclean data
         EpochsInTime = sprep.utils.scoring2time(Epochs, EpochLength, EEG.srate, size(EEG.data, 2)); % uses points, to more easily get chunk of EEG data and put it back % TODO: check that off-by-one isn't a problem
         [Starts, Ends] = sprep.utils.data2windows(EpochsInTime);
+        Edges = [Starts(:), Ends(:)];
         EEGStage = pop_select(EEG, 'point', [Starts(:), Ends(:)]);
 
         % switch out clean filtered data for all epochs unfiltered data
@@ -89,6 +101,17 @@ for CycleIdx = 1:numel(StartCycles)
 
         % replace EEG with clean data
         EEG.data(:, EpochsInTime) = EEGICA.data;
+
+        % save components
+        EEGICA.data = [];
+        EEGICA.Edges = Edges;
+        if ~isfield(EEG, 'allICA')
+            EEG.allICA = EEGICA;
+            Idx = 1;
+        else
+            EEG.allICA(Idx) = EEGICA;
+        end
+        Idx = Idx+1;
     end
 end
 
