@@ -7,6 +7,10 @@ function EEG = eeglab_ica(EEG)
 %
 % from iota-neurophys, Snipes, 2024
 
+if size(EEG.data, 2) < EEG.srate
+    error('not enough eeg data for ICA')
+end
+
 % run ICA (takes a while)
 Rank = sum(eig(cov(double(EEG.data'))) > 1E-7);
 if Rank ~= size(EEG.data, 1)

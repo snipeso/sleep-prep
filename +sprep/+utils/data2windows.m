@@ -1,5 +1,5 @@
 function [Starts, Ends] = data2windows(Array, Threshold)
-% Takes an array of numbers. If the data is not 1s and 0s, then it uses the
+% Takes an array of numbers, and provides windows. If the data is not 1s and 0s, then it uses the
 % threshold to convert into windows above the threshold. If no threshold is
 % provided, then it will take all positive values as above threshold. If
 % you want everything below a threshold, just provide both values as
